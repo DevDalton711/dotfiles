@@ -1,0 +1,32 @@
+name: Sync Upstream Skills
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-skills:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout dotfiles
+        uses: actions/checkout@v4
+
+      - name: Check for updates
+        run: |
+          echo "Syncing skills..."
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add skills/
+            git commit -m "chore(skills): auto-sync upstream skill definitions"
+            git push origin main
+          else
+            echo "Skills are up to date."
+          fi
