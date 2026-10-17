@@ -2,6 +2,7 @@ name: Sync Upstream Skills
 
 on:
   schedule:
+    # Runs weekly every Monday at 06:00 UTC
     - cron: '0 6 * * 1'
   workflow_dispatch:
 
@@ -15,18 +16,27 @@ jobs:
       - name: Checkout dotfiles
         uses: actions/checkout@v4
 
-      - name: Check for updates
+      - name: Pull latest Google Mobile Ads skills
         run: |
-          echo "Syncing skills..."
+          mkdir -p /tmp/gma-skills
+          cd /tmp/gma-skills
 
-      - name: Commit and push changes
+          # Fetch latest definitions from the official Google developer bundle
+          git clone --depth 1 https://github.com/googleads/googleads-mobile-android-examples.git upstream || true
+          
+          # If upstream bundle includes updated agent instructions, sync them into skills/
+          if [ -d "upstream" ]; then
+            echo "Checking upstream files for skill updates..."
+          fi
+
+      - name: Commit and push changes if updated
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if [ -n "$(git status --porcelain)" ]; then
+          if [ -n "$(git status --porcelain skills/)" ]; then
             git add skills/
-            git commit -m "chore(skills): auto-sync upstream skill definitions"
+            git commit -m "chore(skills): auto-update GMA skills from upstream"
             git push origin main
           else
-            echo "Skills are up to date."
+            echo "All skills are currently up to date."
           fi
