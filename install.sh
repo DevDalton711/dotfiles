@@ -10,3 +10,10 @@ mkdir -p ~/.agents ~/.claude ~/.gemini
 ln -sfn "$DOTFILES_DIR/skills" ~/.agents/skills
 ln -sfn "$DOTFILES_DIR/skills" ~/.claude/skills
 ln -sfn "$DOTFILES_DIR/skills" ~/.gemini/skills
+
+# Link Claude MCP configuration
+mkdir -p "$HOME/.claude"
+if [ -f "$DOTFILES_DIR/claude/mcp.json" ]; then
+  ln -sf "$DOTFILES_DIR/claude/mcp.json" "$HOME/.claude/mcp.json"
+  echo "Linked Claude MCP configuration to ~/.claude/mcp.json"
+fi
