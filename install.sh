@@ -23,3 +23,11 @@ if [ -d "/workspaces/agentic-lab" ] && [ -f "$DOTFILES_DIR/claude/mcp.json" ]; t
   ln -sf "$DOTFILES_DIR/claude/mcp.json" "/workspaces/agentic-lab/.mcp.json"
   echo "Linked .mcp.json to /workspaces/agentic-lab/.mcp.json"
 fi
+# Symlink .bash_aliases to home directory
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ln -sf "$DOTFILES_DIR/.bash_aliases" "$HOME/.bash_aliases"
+
+# Ensure .bashrc loads .bash_aliases
+if ! grep -q "source ~/.bash_aliases" "$HOME/.bashrc" 2>/dev/null; then
+  echo -e "\nif [ -f ~/.bash_aliases ]; then\n    . ~/.bash_aliases\nfi" >> "$HOME/.bashrc"
+fi
