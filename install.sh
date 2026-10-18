@@ -17,3 +17,9 @@ if [ -f "$DOTFILES_DIR/claude/mcp.json" ]; then
   ln -sf "$DOTFILES_DIR/claude/mcp.json" "$HOME/.claude/mcp.json"
   echo "Linked Claude MCP configuration to ~/.claude/mcp.json"
 fi
+
+# Link workspace-level MCP config if inside a workspace
+if [ -d "/workspaces/agentic-lab" ] && [ -f "$DOTFILES_DIR/claude/mcp.json" ]; then
+  ln -sf "$DOTFILES_DIR/claude/mcp.json" "/workspaces/agentic-lab/.mcp.json"
+  echo "Linked .mcp.json to /workspaces/agentic-lab/.mcp.json"
+fi
